@@ -1,5 +1,10 @@
 package com.revature.daos;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +14,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.HttpMethod;
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.revature.model.Reimbursement;
 import com.revature.util.ConnectionUtil;
 
@@ -68,7 +81,8 @@ public class ReimbursementDaoJdbc implements ReimbursementDao {
 		}
 		return null;
 	}
-
+	
+	
 	@Override
 	public int save(Reimbursement r) {
 		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
@@ -76,7 +90,8 @@ public class ReimbursementDaoJdbc implements ReimbursementDao {
 	    String resTime = r.getResolved();
 	    LocalDateTime submittedDateTime = LocalDateTime.parse(subTime, formatter);
 	    LocalDateTime resolvedDateTime = null;
-	    
+	    String receipt = r.getReceipt();
+	  
 		try (Connection conn = ConnectionUtil.getConnection()) {
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO ers_reimbursement (reimb_amount, reimb_submitted, reimb_resolved, reimb_description," + 
 					"reimb_receipt, reimb_author, reimb_resolver, reimb_status_id, reimb_type_id)" + 
@@ -85,7 +100,7 @@ public class ReimbursementDaoJdbc implements ReimbursementDao {
 			ps.setObject(2, submittedDateTime);
 			ps.setObject(3, resolvedDateTime);
 			ps.setString(4, r.getDescription());
-			ps.setString(5, r.getReceipt());;
+			ps.setString(5, r.getReceipt());
 			ps.setInt(6, r.getAuthor());
 			ps.setInt(7, 1);
 			ps.setInt(8, r.getReimbStatusId());

@@ -11,15 +11,32 @@
     font-family: pub;
      margin: auto;
      margin-top: 30px;
-     background-color: #584e5775; 
-     border-radius: 1.5em;
+     background-color: #a7a0a7ef; 
+     border-radius: 1.0em;
+     text-align: center;
      
+ }
+ #tableData{
+     z-index: 1;
  }
 #tableDiv{
     z-index: 3;
 }
 #navbarTop{
-    z-index: 2;
+    background-color: #ee29eeef;
+    z-index: 1;
+}
+
+#headRow{
+    background-color: white
+}
+
+#bgImg{
+    position: fixed;
+    margin-top: 168px;
+    width: 100%;
+    margin: auto;
+
 }
 /* .background-image {
   background-size: cover;

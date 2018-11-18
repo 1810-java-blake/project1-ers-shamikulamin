@@ -9,12 +9,13 @@
   <link rel="stylesheet" type="text/css" media="screen" href="emp.css" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
+  <link href="lightbox2-master/src/css/lightbox.css" rel="stylesheet">
 
 </head>
 
 <body>
-  <div class="background-image"></div>
-  <nav id="navbarTop"class="navbar fixed-top navbar-expand-lg navbar-light bg-light" style="box-shadow: 1px 2px 20px 22px rgba(0,0,0,0.3);">
+
+  <nav id="navbarTop"class="navbar fixed-top navbar-expand-lg navbar-light bg-light" style="box-shadow: 1px 2px 20px 22px;">
     <a class="navbar-brand" ><img src="https://vignette.wikia.nocookie.net/hishe/images/d/db/VillainsPub.png" height = 40 class="d-inline-block align-top" alt="">
       Employee Dashboard </a>
     <ul class="navbar-nav mr-auto">
@@ -46,7 +47,11 @@
       </form>
     </div>
   </nav>
-  <div style="margin-top: 20px" class="container">
+  <div class="background-image">
+      <img id="bgImg" src="img/voldy.png" alt="logImg">
+  </div>
+  <div style="margin-top: 20px; position: relative;" class="container">
+     
       <div class="row">
         <div class="col">
         </div>
@@ -57,7 +62,7 @@
         <div class="col">
         </div>
         <div class="col">
-          <h1 id="head">Reimbursement</h1>
+          <h1 style="margin-top:20%; text-align: center" id="head">Villian Reimbursements</h1>
         </div>
         <div class="col">
         </div>
@@ -68,7 +73,7 @@
       <div class="col-sm">
         <table class="table table-striped" id='dataTable'>
           <thead>
-            <tr>
+            <tr id="headRow">
               <th scope="col">#</th>
               <th scope="col">Amount</th>
               <th scope="col">Submitted Time</th>
@@ -106,7 +111,7 @@
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Upload Receipt:</label>
-                  <textarea class="form-control" id="reciept"></textarea>
+                  <input id = 'fileUp' type="file" name="pic" accept="image/*">
                 </div>
                 <label for="exampleFormControlSelect1">Reimbursement Type</label>
                 <select class="form-control" id="dropSelect">
@@ -148,8 +153,10 @@
                   <textarea class="form-control" id="editDescrip"></textarea>
                 </div>
                 <div class="form-group">
-                  <label class="col-form-label">Upload Reciept:</label>
-                  <textarea class="form-control" id="editReceipt"></textarea>
+                    <div class="form-group">
+                        <label class="col-form-label">Upload Receipt:</label>
+                        <input id = 'editFileUp' type="file" name="pic" accept="image/*">
+                      </div>
                 </div>
                 <label for="exampleFormControlSelect1">Reimbursement Type</label>
                 <select class="form-control" id="editDropSelect">
@@ -215,12 +222,14 @@
 
 </body>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-  crossorigin="anonymous"></script>
+<script src="jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
   crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
   crossorigin="anonymous"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+
+<script src="lightbox2-master/src/js/lightbox.js"></script>
 <script src="employee.js"></script>
 
 </html>

@@ -11,6 +11,23 @@ let userData = {
 let userN = {
     username: user
 }
+
+var albumBucketName = '1810-upload-receipt-sham';
+var bucketRegion = 'us-east-2';
+var IdentityPoolId = 'us-east-2:cd07e819-60dc-4ac0-a962-c83c21a85535';
+
+AWS.config.update({
+    region: bucketRegion,
+    credentials: new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: IdentityPoolId
+  })
+});
+
+var s3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  params: {Bucket: albumBucketName}
+});
+
 fetch('http://localhost:8089/ERS/users/profile', {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     credentials: "include", // include, *same-origin, omit
@@ -96,7 +113,12 @@ function appendToTable(row, item) {
     cell5.innerText = item.description
 
     let cell6 = row.insertCell(5);
-    cell6.innerText = item.receipt
+    let link = document.createElement("a");
+    link.setAttribute("href", item.receipt);
+    link.setAttribute("data-lightbox", item.receipt);
+    let linkText = document.createTextNode("Link to Receipt");
+    link.appendChild(linkText);
+    cell6.appendChild(link);
 
     let cell7 = row.insertCell(6);
     cell7.innerText = item.authorName
@@ -154,7 +176,7 @@ fetch('http://localhost:8089/ERS/reimbursements/getMan', {
             updateId = cells[0].innerText;
             document.getElementById('editAmount').value = cells[1].innerText;
             document.getElementById('editDescrip').value = cells[4].innerText;
-            document.getElementById('editReceipt').value = cells[5].innerText;
+           // document.getElementById('editReceipt').value = cells[5].innerText;
             document.getElementById('editStatus').innerHTML = cells[8].innerText;
             document.getElementById('editDropSelect').value = cells[9].innerText;
 
@@ -164,7 +186,7 @@ fetch('http://localhost:8089/ERS/reimbursements/getMan', {
                 case 'Pending':
                     document.getElementById('editAmount').disabled = false;
                     document.getElementById('editDescrip').disabled = false;
-                    document.getElementById('editReceipt').disabled = false;
+                   // document.getElementById('editReceipt').disabled = false;
                     document.getElementById('editDropSelect').disabled = false;
                     document.getElementById('editSubBtn').disabled = false;
                     document.getElementById("rowWarning").innerHTML = ""
@@ -172,7 +194,7 @@ fetch('http://localhost:8089/ERS/reimbursements/getMan', {
                 default:
                     document.getElementById('editAmount').disabled = true;
                     document.getElementById('editDescrip').disabled = true;
-                    document.getElementById('editReceipt').disabled = true;
+                   // document.getElementById('editReceipt').disabled = true;
                     document.getElementById('editDropSelect').disabled = true;
                     document.getElementById('editSubBtn').disabled = true;
                     document.getElementById("rowWarning").innerHTML = "Cannot edit an already resolved reimbursement"
@@ -189,11 +211,16 @@ fetch('http://localhost:8089/ERS/reimbursements/getMan', {
 function updateReq() {
     let amountInput = document.getElementById("editAmount").value;
     let desc = document.getElementById("editDescrip").value;
-    let receiptInput = document.getElementById("editReceipt").value;
+   // let receiptInput = document.getElementById("editReceipt").value;
     let warn = document.getElementById("warning");
     let sel = document.getElementById('editDropSelect');
     let approval = document.getElementById('editApprovalSelect');
     console.log(cells);
+    var files = document.getElementById('editFileUp').files;
+    addPhoto(files);
+    
+    var file = files[0];
+    var fileName = file.name;
     let newStatus;
     cells[3].innerHTML = getDateTime();
     switch (approval.value) {
@@ -235,7 +262,7 @@ function updateReq() {
         return;
     }
 
-    if (amount === "" || desc === "" || receiptInput === "") {
+    if (amount === "" || desc === "" ) {
         warn.innerHTML = "Please fill in all the boxes"
         return;
     }
@@ -246,7 +273,7 @@ function updateReq() {
         submittedTime: getDateTime(),
         resolved: getDateTime(),
         description: desc,
-        receipt: receiptInput,
+        receipt:  'https://s3.us-east-2.amazonaws.com/1810-upload-receipt-sham/'+fileName,
         authorName: "",
         resolverName: "",
         reimbStatus: "",
@@ -279,17 +306,22 @@ function updateReq() {
 function submitReq() {
     let amountInput = document.getElementById("amount").value;
     let desc = document.getElementById("descrip").value;
-    let receiptInput = document.getElementById("reciept").value;
+   // let receiptInput = document.getElementById("reciept").value;
     let warn = document.getElementById("warning");
     let sel = document.getElementById('dropSelect');
     console.log(sel);
+    var files = document.getElementById('fileUp').files;
+    addPhoto(files);
+    
+    var file = files[0];
+    var fileName = file.name;
 
     if (isNaN(amountInput)) {
         warn.innerHTML = " Please enter numbers only in Amount";
         return;
     }
 
-    if (amount === "" || desc === "" || receiptInput === "") {
+    if (amount === "" || desc === "") {
         warn.innerHTML = "Please fill in all the boxes"
         return;
     }
@@ -300,7 +332,7 @@ function submitReq() {
         submittedTime: getDateTime(),
         resolved: null,
         description: desc,
-        receipt: receiptInput,
+        receipt: 'https://s3.us-east-2.amazonaws.com/1810-upload-receipt-sham/'+fileName,
         authorName: user,
         resolverName: "",
         reimbStatus: "Pending",
@@ -368,7 +400,7 @@ function filter(){
         updateId = cells[0].innerText;
         document.getElementById('editAmount').value = cells[1].innerText;
         document.getElementById('editDescrip').value = cells[4].innerText;
-        document.getElementById('editReceipt').value = cells[5].innerText;
+        //document.getElementById('editReceipt').value = cells[5].innerText;
         document.getElementById('editStatus').innerHTML = cells[8].innerText;
         document.getElementById('editDropSelect').value = cells[9].innerText;
 
@@ -378,7 +410,7 @@ function filter(){
             case 'Pending':
                 document.getElementById('editAmount').disabled = false;
                 document.getElementById('editDescrip').disabled = false;
-                document.getElementById('editReceipt').disabled = false;
+             //   document.getElementById('editReceipt').disabled = false;
                 document.getElementById('editDropSelect').disabled = false;
                 document.getElementById('editSubBtn').disabled = false;
                 document.getElementById("rowWarning").innerHTML = ""
@@ -386,7 +418,7 @@ function filter(){
             default:
                 document.getElementById('editAmount').disabled = true;
                 document.getElementById('editDescrip').disabled = true;
-                document.getElementById('editReceipt').disabled = true;
+              //  document.getElementById('editReceipt').disabled = true;
                 document.getElementById('editDropSelect').disabled = true;
                 document.getElementById('editSubBtn').disabled = true;
                 document.getElementById("rowWarning").innerHTML = "Cannot edit an already resolved reimbursement"
@@ -407,3 +439,25 @@ function dynamicSort(property) {
         return result * sortOrder;
     }
 }
+
+function addPhoto(files) {
+    if (!files.length) {
+      return alert('Please choose a file to upload first.');
+    }
+    var file = files[0];
+    var fileName = file.name;
+  //  var albumPhotosKey = encodeURIComponent(albumName) + '//';
+  
+    var photoKey = fileName;
+    s3.upload({
+      Key: photoKey,
+      Body: file,
+      ACL: 'public-read'
+    }, function(err, data) {
+      if (err) {
+          console.log('Error:  '+ err.message)
+        return 
+      }
+      console.log('Successfully uploaded photo.');
+    });
+  }
